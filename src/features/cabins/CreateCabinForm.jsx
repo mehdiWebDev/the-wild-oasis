@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
-import Input from "../../ui/Input";
 import Form from "../../ui/Form.jsx";
 import Button from "../../ui/Button.jsx";
-import FileInput from "../../ui/FileInput.jsx";
+import Fileinput from "../../ui/Fileinput.jsx";
 import Textarea from "../../ui/Textarea.jsx";
+import {useForm} from "react-hook-form";
 
 const FormRow = styled.div`
   display: grid;
@@ -43,36 +43,40 @@ const Error = styled.span`
 `;
 
 function CreateCabinForm() {
+  const {register, handleSubmit} = useForm();
+  const onSubmit = (data) => {
+    console.log("Form submitted with data:", data);
+  };
   return (
-    <Form>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <FormRow>
         <Label htmlFor="name">Cabin name</Label>
-        <Input type="text" id="name" />
+        <input type="text" id="name" {...register("name")} />
       </FormRow>
 
       <FormRow>
         <Label htmlFor="maxCapacity">Maximum capacity</Label>
-        <Input type="number" id="maxCapacity" />
+        <input type="number" id="maxCapacity" {...register("maxCapacity")}/>
       </FormRow>
 
       <FormRow>
         <Label htmlFor="regularPrice">Regular price</Label>
-        <Input type="number" id="regularPrice" />
+        <input type="number" id="regularPrice" {...register("regularPrice")} />
       </FormRow>
 
       <FormRow>
         <Label htmlFor="discount">Discount</Label>
-        <Input type="number" id="discount" defaultValue={0} />
+        <input type="number" id="discount" defaultValue={0} {...register("discount")} />
       </FormRow>
 
       <FormRow>
         <Label htmlFor="description">Description for website</Label>
-        <Textarea type="number" id="description" defaultValue="" />
+        <Textarea type="number" id="description" defaultValue="" {...register("description")} />
       </FormRow>
 
       <FormRow>
         <Label htmlFor="image">Cabin photo</Label>
-        <FileInput id="image" accept="image/*" />
+        <Fileinput id="image" accept="image/*" />
       </FormRow>
 
       <FormRow>
@@ -80,7 +84,7 @@ function CreateCabinForm() {
         <Button variation="secondary" type="reset">
           Cancel
         </Button>
-        <Button>Edit cabin</Button>
+        <Button>Add cabin</Button>
       </FormRow>
     </Form>
   );

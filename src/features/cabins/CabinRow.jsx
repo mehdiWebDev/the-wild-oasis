@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import {formatCurrency} from "../../utils/helpers";
+import { formatCurrency } from "../../utils/helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCabin } from "../../services/apiCabins";
+import toast from "react-hot-toast";
 
 const TableRow = styled.div`
   display: grid;
@@ -43,31 +44,33 @@ const Discount = styled.div`
 `;
 
 
-const CabinRow = ({cabin}) => {
+const CabinRow = ({ cabin }) => {
 
-  const {id:cabinId,name, maxCapacity, regularPrice, discount, image} = cabin;
+  const { id: cabinId, name, maxCapacity, regularPrice, discount, image } = cabin;
 
   const queryClient = useQueryClient();
 
-  const {isLoadind, mutate: deleteCabinMutation} = useMutation({
+  const { isLoadind, mutate: deleteCabinMutation } = useMutation({
     mutationFn: (cabinId) => deleteCabin(cabinId),
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['cabins']});
+      queryClient.invalidateQueries({ queryKey: ['cabins'] });
+      toast.success('Cabin deleted successfully');
     },
     onError: (error) => {
       console.error('Error deleting cabin:', error);
+      toast.error(error.message || 'Failed to delete cabin');
     }
   });
 
   console.log('CabinRow:', isLoadind);
 
   return <TableRow role="row">
-      <Img src={image} alt={name} />
-      <Cabin>{name}</Cabin>
-      <div>Fits up to {maxCapacity} people</div>
-      <Price>{formatCurrency(regularPrice)}</Price>
-      <Discount>{discount ? `${formatCurrency(discount)}` : 'No discount'}</Discount>
-      <button  disabled={isLoadind} onClick={() => deleteCabinMutation(cabinId)}> Delete </button>
+    <Img src={image} alt={name} />
+    <Cabin>{name}</Cabin>
+    <div>Fits up to {maxCapacity} people</div>
+    <Price>{formatCurrency(regularPrice)}</Price>
+    <Discount>{discount ? `${formatCurrency(discount)}` : 'No discount'}</Discount>
+    <button disabled={isLoadind} onClick={() => deleteCabinMutation(cabinId)}> Delete </button>
   </TableRow>
 }
 

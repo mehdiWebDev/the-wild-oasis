@@ -23,3 +23,15 @@ export const deleteCabin = async (cabinId) => {
     }
     return data;
 }
+
+export const createCabin = async (cabinData) => {
+    const { data, error } = await supabase
+        .from('cabins')
+        .insert(cabinData);
+
+    if (error) {
+        console.error('Error creating cabin:', error);
+        return null;
+    }
+    return data;
+}
